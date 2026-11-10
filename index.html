@@ -1,0 +1,1293 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algerian Revolution Anniversary – Registration</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+
+<style>
+:root {
+  --green: #07533d;
+  --deep-green: #063b2d;
+  --gold: #c49a43;
+  --light-gold: #e8d5a5;
+  --cream: #fbf7ec;
+  --ink: #26352d;
+  --muted: #6b746d;
+  --red: #a52e2e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.08),
+      rgba(0, 0, 0, 0.08)
+    ),
+    url("background.jpg") center center / cover fixed no-repeat;
+  padding: 35px 15px;
+}
+
+/* Falling lanterns */
+.lantern {
+  position: fixed;
+  top: -120px;
+  width: 42px;
+  height: 58px;
+  background: url("lantern.png") center / contain no-repeat;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .85;
+  animation: lanternFall linear infinite;
+}
+
+.lantern:nth-child(1) {
+  left: 8%;
+  animation-duration: 18s;
+  animation-delay: 0s;
+}
+
+.lantern:nth-child(2) {
+  left: 27%;
+  animation-duration: 23s;
+  animation-delay: 4s;
+  width: 34px;
+}
+
+.lantern:nth-child(3) {
+  left: 52%;
+  animation-duration: 20s;
+  animation-delay: 8s;
+}
+
+.lantern:nth-child(4) {
+  left: 76%;
+  animation-duration: 25s;
+  animation-delay: 2s;
+  width: 36px;
+}
+
+.lantern:nth-child(5) {
+  left: 91%;
+  animation-duration: 19s;
+  animation-delay: 11s;
+}
+
+@keyframes lanternFall {
+  0% {
+    transform: translateY(-120px) rotate(-8deg);
+  }
+  50% {
+    transform: translateY(55vh) rotate(8deg);
+  }
+  100% {
+    transform: translateY(115vh) rotate(-8deg);
+  }
+}
+
+/* Main white frame with green edges */
+.container {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  background: #ffffff !important;
+  border: 2px solid var(--green);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* Green decorative edge */
+.container::before {
+  content: "";
+  display: block;
+  height: 7px;
+  background: linear-gradient(
+    90deg,
+    var(--deep-green),
+    #16815e,
+    var(--gold),
+    #16815e,
+    var(--deep-green)
+  );
+}
+
+.container::after {
+  content: "";
+  display: block;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--deep-green),
+    #16815e,
+    var(--gold),
+    #16815e,
+    var(--deep-green)
+  );
+}
+
+.logo {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 32px 25px 24px;
+  background: #ffffff !important;
+  border-bottom: 2px solid #e4eadf;
+  position: relative;
+}
+
+.header h1 {
+  color: var(--green);
+  font-size: 27px;
+  line-height: 1.3;
+  margin: 5px 0 8px;
+}
+
+.header .subtitle {
+  color: #8a6b2f;
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Gold divider */
+.gold-divider {
+  display: block !important;
+  width: 90px;
+  height: 3px;
+  background: var(--gold);
+  border-radius: 5px;
+  margin: 15px auto 0;
+}
+
+/* Main content */
+.content {
+  padding: 25px 35px 35px;
+  color: var(--ink);
+  background: #ffffff !important;
+}
+
+/* Notice */
+.notice {
+  background: #f0f6f1 !important;
+  border-left: 5px solid var(--green);
+  padding: 15px 17px;
+  border-radius: 7px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-size: 14px;
+  color: #35483d;
+}
+
+/* Sections */
+.section {
+  margin-top: 25px;
+  padding: 22px;
+  border: 1px solid #d5e3d8;
+  border-left: 4px solid var(--green);
+  border-radius: 12px;
+  background: #fbfdfb !important;
+}
+
+.section-title {
+  color: var(--green);
+  border-bottom: 1px solid #dce8df;
+  padding-bottom: 12px;
+}
+
+.section-number {
+  display: inline-flex;
+  width: 29px;
+  height: 29px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+label {
+  display: block;
+  margin: 15px 0 7px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #35483d;
+}
+
+.required {
+  color: var(--red);
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #d8cfba;
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  outline: none;
+  transition: border .2s, box-shadow .2s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(7, 83, 61, .12);
+}
+
+input:disabled,
+select:disabled {
+  background: #eeeae0;
+  cursor: not-allowed;
+}
+
+.help-text {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.warning {
+  display: none;
+  background: #fbe9e6;
+  border: 1px solid #e4b6ad;
+  color: #8b2922;
+  padding: 13px;
+  margin-top: 14px;
+  border-radius: 7px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Children cards */
+.child-card {
+  background: #f5f9f5 !important;
+  border: 1px solid #d5e3d8;
+  border-left: 4px solid #16815e;
+  border-radius: 9px;
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.child-card h4 {
+  color: var(--green);
+  margin: 0 0 9px;
+  font-size: 16px;
+}
+
+.child-card label {
+  margin-top: 12px;
+}
+
+.message {
+  display: none;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.error {
+  display: none;
+  color: #922d27;
+  background: #fbe9e6;
+  border: 1px solid #e6b8b0;
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 7px;
+  padding: 15px 22px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.primary-btn {
+  background: var(--green);
+  color: white;
+  width: 100%;
+  margin-top: 25px;
+  box-shadow: 0 5px 14px rgba(7,83,61,.18);
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: var(--deep-green);
+  transform: translateY(-1px);
+}
+
+.primary-btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  background: #e9f0e9;
+  color: var(--deep-green);
+  border: 1px solid #c8d9cb;
+}
+
+.secondary-btn:hover {
+  background: #dceade;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.button-row button {
+  flex: 1;
+}
+
+/* Footer */
+.footer {
+  background: #f3f7f3 !important;
+  text-align: center;
+  padding: 18px;
+  color: #52645a;
+  font-size: 12px;
+  border-top: 1px solid #dce8df;
+}
+
+/* Review panel */
+#reviewPanel {
+  display: none;
+}
+
+.review-intro {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.review-group {
+  border: 1px solid #d5e3d8;
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 14px;
+  background: #fbfdfb !important;
+}
+
+.review-group h3 {
+  margin: 0 0 12px;
+  color: var(--green);
+  font-size: 16px;
+}
+
+.review-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee8d9;
+  font-size: 14px;
+}
+
+.review-line:last-child {
+  border-bottom: none;
+}
+
+.review-line span:first-child {
+  color: #777;
+}
+
+.review-line strong {
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* Success panel */
+#successPanel {
+  display: none;
+  text-align: center;
+  padding: 45px 25px 55px;
+  background: #ffffff !important;
+}
+
+.success-icon {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  background: #e3f0e7;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  border: 3px solid #b9d7c3;
+  animation: successPop .65s ease-out both;
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(.2);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+#successPanel h2 {
+  color: var(--green);
+  font-size: 28px;
+  margin: 0 0 14px;
+}
+
+#successPanel p {
+  line-height: 1.7;
+  color: #59675e;
+}
+
+.success-confetti {
+  font-size: 24px;
+  letter-spacing: 8px;
+  margin-bottom: 18px;
+}
+
+/* Mobile layout */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 12px 10px;
+    background-attachment: scroll;
+    background-position: center center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+    background: #ffffff !important;
+    border-width: 2px;
+    border-radius: 14px;
+  }
+
+  .header {
+    padding: 20px 12px 15px;
+  }
+
+  .logo {
+    width: 75px;
+    height: 75px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .header .subtitle {
+    font-size: 12px;
+  }
+
+  .content {
+    padding: 14px 12px 20px;
+  }
+
+  .notice {
+    padding: 11px;
+    font-size: 13px;
+    margin-bottom: 15px;
+  }
+
+  .section {
+    margin-top: 15px;
+    padding: 13px;
+    background: #fbfdfb !important;
+  }
+
+  .section-title {
+    font-size: 17px;
+    margin-bottom: 14px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  input,
+  select {
+    padding: 11px;
+    font-size: 14px;
+  }
+
+  .child-card {
+    padding: 12px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    padding: 13px;
+  }
+
+  .footer {
+    padding: 12px;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Five falling lanterns -->
+<div class="lantern"></div>
+<div class="lantern"></div>
+<div class="lantern"></div>
+<div class="lantern"></div>
+<div class="lantern"></div>
+
+<div class="container">
+
+  <header class="header">
+    <img src="logo.png" class="logo" alt="Consulate Logo"
+         onerror="this.style.display='none'">
+
+    <h1>72nd Anniversary of the Outbreak of the Algerian Revolution</h1>
+
+    <div class="subtitle">Consulate General of Algeria in San Francisco</div>
+    <div class="gold-divider"></div>
+  </header>
+
+  <main class="content">
+
+    <div class="notice">
+      We are pleased to invite you to celebrate this important occasion with us.
+      Please complete the registration form below. Each registration is for one
+      family, and all information must be accurate.
+    </div>
+
+    <!-- REGISTRATION FORM -->
+    <form id="registrationForm" novalidate>
+
+      <!-- SECTION 1 -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-number">1</span>
+          Parent Information
+        </h2>
+
+        <label for="principalFullName">
+          Parent's Full Name <span class="required">*</span>
+        </label>
+        
+      <input
+      id="principalFullName"
+      name="name"
+      type="text"
+      autocomplete="name"
+      placeholder="Enter your full name"
+      required>
+
+        <label for="email">
+          Email Address <span class="required">*</span>
+        </label>
+        <input id="email" type="email" autocomplete="email"
+               placeholder="name@example.com" required>
+
+        <label for="phone">
+          Phone Number <span class="required">*</span>
+        </label>
+        <input id="phone" type="tel" autocomplete="tel"
+               placeholder="Enter your phone number" required>
+      </section>
+
+      <!-- SECTION 2 -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-number">2</span>
+          Consular Registration
+        </h2>
+
+        <label>
+          Is one of the parents registered with the Consulate?
+          <span class="required">*</span>
+        </label>
+
+        <select id="parentConsularRegistered" required>
+          <option value="">Please select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <div id="consularWarning" class="warning">
+          Registration is available only if at least one parent is registered
+          with the Consulate. Please contact the Consulate if you need assistance.
+        </div>
+
+        <div id="registeredParentFields" style="display:none;">
+          <label for="registeredParentFullName">
+            Registered Parent's Full Name <span class="required">*</span>
+          </label>
+          <input id="registeredParentFullName" type="text"
+                 placeholder="Enter registered parent's full name">
+
+          <label for="registeredParentDOB">
+            Registered Parent's Date of Birth <span class="required">*</span>
+          </label>
+          <input id="registeredParentDOB" type="date">
+        </div>
+      </section>
+
+      <!-- SECTION 3 -->
+      <section class="section">
+        <h2 class="section-title">
+          <span class="section-number">3</span>
+          Children Information
+        </h2>
+
+        <label for="childrenCount">
+          How many children under 15 will you bring?
+          <span class="required">*</span>
+        </label>
+
+        <select id="childrenCount" required>
+          <option value="">Select number of children</option>
+          <option value="1">1 child</option>
+          <option value="2">2 children</option>
+          <option value="3">3 children</option>
+          <option value="4">4 children</option>
+          <option value="5">5 children</option>
+        </select>
+
+        <div class="help-text">
+          You may register up to 5 children under the age of 15.
+        </div>
+
+        <div id="childrenFields"></div>
+      </section>
+
+      <div id="formError" class="message error"></div>
+
+      <button type="submit" id="reviewBtn" class="primary-btn">
+        Review Registration
+      </button>
+
+    </form>
+
+    <!-- REVIEW PANEL -->
+    <section id="reviewPanel">
+
+      <div class="section">
+        <h2 class="section-title">
+          <span class="section-number">✓</span>
+          Review Your Registration
+        </h2>
+
+        <p class="review-intro">
+          Please carefully review the information below before submitting.
+          If anything is incorrect, go back and make the necessary changes.
+        </p>
+
+        <div id="reviewDetails"></div>
+
+        <div id="reviewError" class="message error"></div>
+
+        <div class="button-row">
+          <button type="button" id="editBtn" class="secondary-btn">
+            Go Back & Edit
+          </button>
+
+          <button type="button" id="confirmBtn" class="primary-btn"
+                  style="margin-top:0;">
+            Confirm & Submit
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SUCCESS PANEL -->
+    <section id="successPanel">
+      <div class="success-confetti">✦ ✧ ✦</div>
+
+      <div class="success-icon">✓</div>
+
+      <h2>Registration Received!</h2>
+
+      <p>
+        Your registration has been successfully submitted.
+      </p>
+
+      <p>
+        You will receive a confirmation email shortly.
+      </p>
+
+      <p>
+        We look forward to welcoming you!
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    Consulate General of Algeria in San Francisco
+  </footer>
+
+</div>
+
+<script>
+/* =====================================================
+   1. FIREBASE CONFIGURATION
+   Replace these values with your ORIGINAL Firebase
+   Web App configuration.
+===================================================== */
+
+const firebaseConfig = {
+   apiKey: "AIzaSyB_uZEw9yTFZqVOaIi3tEndGslXEaWgmNA",
+  authDomain: "st-november-kids.firebaseapp.com",
+  projectId: "st-november-kids",
+  storageBucket: "st-november-kids.firebasestorage.app",
+  messagingSenderId: "216232349971",
+  appId: "1:216232349971:web:293f698d7fb9958b11cae6",
+  measurementId: "G-W832YT9R24"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* =====================================================
+   2. SETTINGS
+===================================================== */
+
+const MAX_TOTAL = 20;
+const MAX_CHILDREN = 5;
+const COLLECTION_NAME = "registrations";
+
+let registrationData = null;
+let isSubmitting = false;
+
+/* =====================================================
+   3. ELEMENTS
+===================================================== */
+
+const form = document.getElementById("registrationForm");
+const parentRegistered = document.getElementById("parentConsularRegistered");
+const registeredFields = document.getElementById("registeredParentFields");
+const consularWarning = document.getElementById("consularWarning");
+const childrenCount = document.getElementById("childrenCount");
+const childrenFields = document.getElementById("childrenFields");
+
+const formError = document.getElementById("formError");
+const reviewError = document.getElementById("reviewError");
+
+const reviewPanel = document.getElementById("reviewPanel");
+const reviewDetails = document.getElementById("reviewDetails");
+const successPanel = document.getElementById("successPanel");
+
+const reviewBtn = document.getElementById("reviewBtn");
+const confirmBtn = document.getElementById("confirmBtn");
+const editBtn = document.getElementById("editBtn");
+
+/* =====================================================
+   4. CONSULAR REGISTRATION LOGIC
+===================================================== */
+
+parentRegistered.addEventListener("change", function () {
+  const answer = this.value;
+
+  registeredFields.style.display = answer === "Yes" ? "block" : "none";
+  consularWarning.style.display = answer === "No" ? "block" : "none";
+
+  document.getElementById("registeredParentFullName").required =
+    answer === "Yes";
+
+  document.getElementById("registeredParentDOB").required =
+    answer === "Yes";
+
+  updateReviewButton();
+});
+
+/* =====================================================
+   5. DYNAMIC CHILDREN FIELDS
+===================================================== */
+
+childrenCount.addEventListener("change", function () {
+  const count = Number(this.value || 0);
+
+  childrenFields.innerHTML = "";
+
+  if (count < 0 || count > MAX_CHILDREN) {
+    this.value = "";
+    return;
+  }
+
+  for (let i = 1; i <= count; i++) {
+    const childCard = document.createElement("div");
+    childCard.className = "child-card";
+
+    childCard.innerHTML = `
+      <h4>Child ${i}</h4>
+
+      <label for="childName${i}">
+        Child's Full Name <span class="required">*</span>
+      </label>
+
+      <input
+        type="text"
+        id="childName${i}"
+        class="child-name"
+        placeholder="Enter child's full name"
+        required
+      >
+
+      <label for="childAge${i}">
+        Child's Age <span class="required">*</span>
+      </label>
+
+      <select id="childAge${i}" class="child-age" required>
+        <option value="">Select age</option>
+        ${Array.from({length: 15}, (_, age) =>
+          `<option value="${age}">${age}</option>`
+        ).join("")}
+      </select>
+    `;
+
+    childrenFields.appendChild(childCard);
+  }
+
+  updateReviewButton();
+});
+
+/* =====================================================
+   6. VALIDATION HELPERS
+===================================================== */
+
+function showError(element, message) {
+  element.textContent = message;
+  element.style.display = "block";
+}
+
+function hideError(element) {
+  element.textContent = "";
+  element.style.display = "none";
+}
+
+function getChildrenData() {
+  const count = Number(childrenCount.value || 0);
+  const children = [];
+
+  if (count > MAX_CHILDREN) {
+    throw new Error("You can register a maximum of 5 children.");
+  }
+
+  for (let i = 1; i <= count; i++) {
+    const name = document.getElementById(`childName${i}`).value.trim();
+    const ageValue = document.getElementById(`childAge${i}`).value;
+
+    if (!name || ageValue === "") {
+      throw new Error(`Please complete the information for Child ${i}.`);
+    }
+
+    const age = Number(ageValue);
+
+    if (!Number.isInteger(age) || age < 0 || age > 14) {
+      throw new Error(`Child ${i} must be under 15 years old.`);
+    }
+
+    children.push({
+      fullName: name,
+      age: age
+    });
+  }
+
+  return children;
+}
+
+function validateForm() {
+  hideError(formError);
+
+  if (!form.reportValidity()) {
+    return false;
+  }
+
+  if (parentRegistered.value !== "Yes") {
+    showError(
+      formError,
+      "Registration requires at least one parent to be registered with the Consulate."
+    );
+    return false;
+  }
+
+  const count = Number(childrenCount.value);
+
+  if (!Number.isInteger(count) || count < 0 || count > MAX_CHILDREN) {
+    showError(formError, "Please select a valid number of children.");
+    return false;
+  }
+
+  const email = document.getElementById("email").value.trim();
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(email)) {
+    showError(formError, "Please enter a valid email address.");
+    return false;
+  }
+
+  try {
+    getChildrenData();
+  } catch (error) {
+    showError(formError, error.message);
+    return false;
+  }
+
+  return true;
+}
+
+/* =====================================================
+   7. COLLECT REGISTRATION DATA
+===================================================== */
+
+function collectRegistrationData() {
+  const children = getChildrenData();
+
+  const principalFullName =
+    document.getElementById("principalFullName").value.trim();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+  const registeredParentFullName =
+    document.getElementById("registeredParentFullName").value.trim();
+
+  const registeredParentDOB =
+    document.getElementById("registeredParentDOB").value;
+
+  const totalPeople = 1 + children.length;
+
+  return {
+    principalFullName,
+    email,
+    emailLower: email.toLowerCase(),
+    phone,
+    parentConsularRegistered: "Yes",
+    registeredParentFullName,
+    registeredParentDOB,
+    childrenCount: children.length,
+    children,
+    totalPeople
+  };
+}
+
+/* =====================================================
+   8. REVIEW DISPLAY
+===================================================== */
+
+function addReviewLine(label, value) {
+  const line = document.createElement("div");
+  line.className = "review-line";
+
+  const labelElement = document.createElement("span");
+  labelElement.textContent = label;
+
+  const valueElement = document.createElement("strong");
+  valueElement.textContent = value || "—";
+
+  line.appendChild(labelElement);
+  line.appendChild(valueElement);
+
+  return line;
+}
+
+function buildReview() {
+  reviewDetails.innerHTML = "";
+
+  const data = registrationData;
+
+  const parentGroup = document.createElement("div");
+  parentGroup.className = "review-group";
+
+  const parentTitle = document.createElement("h3");
+  parentTitle.textContent = "Parent Information";
+  parentGroup.appendChild(parentTitle);
+
+  parentGroup.appendChild(addReviewLine("Full Name", data.principalFullName));
+  parentGroup.appendChild(addReviewLine("Email", data.email));
+  parentGroup.appendChild(addReviewLine("Phone", data.phone));
+
+  reviewDetails.appendChild(parentGroup);
+
+  const consularGroup = document.createElement("div");
+  consularGroup.className = "review-group";
+
+  const consularTitle = document.createElement("h3");
+  consularTitle.textContent = "Consular Registration";
+  consularGroup.appendChild(consularTitle);
+
+  consularGroup.appendChild(
+    addReviewLine("Parent registered with Consulate", "Yes")
+  );
+
+  consularGroup.appendChild(
+    addReviewLine(
+      "Registered Parent's Full Name",
+      data.registeredParentFullName
+    )
+  );
+
+  consularGroup.appendChild(
+    addReviewLine(
+      "Registered Parent's Date of Birth",
+      data.registeredParentDOB
+    )
+  );
+
+  reviewDetails.appendChild(consularGroup);
+
+  const childrenGroup = document.createElement("div");
+  childrenGroup.className = "review-group";
+
+  const childrenTitle = document.createElement("h3");
+  childrenTitle.textContent = "Children Information";
+  childrenGroup.appendChild(childrenTitle);
+
+  childrenGroup.appendChild(
+    addReviewLine("Number of Children", String(data.childrenCount))
+  );
+
+  if (data.children.length === 0) {
+    childrenGroup.appendChild(
+      addReviewLine("Children", "No children")
+    );
+  }
+
+  data.children.forEach((child, index) => {
+    childrenGroup.appendChild(
+      addReviewLine(`Child ${index + 1}`, `${child.fullName} – Age ${child.age}`)
+    );
+  });
+
+  childrenGroup.appendChild(
+    addReviewLine("Total People", String(data.totalPeople))
+  );
+
+  reviewDetails.appendChild(childrenGroup);
+}
+
+/* =====================================================
+   9. SHOW REVIEW BEFORE SUBMISSION
+===================================================== */
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (!validateForm()) {
+    return;
+  }
+
+  registrationData = collectRegistrationData();
+  buildReview();
+
+  form.style.display = "none";
+  reviewPanel.style.display = "block";
+
+  hideError(reviewError);
+
+  reviewPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+/* =====================================================
+   10. RETURN TO EDIT
+===================================================== */
+
+editBtn.addEventListener("click", function () {
+  reviewPanel.style.display = "none";
+  form.style.display = "block";
+
+  form.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+
+/* =====================================================
+   11. CHECK CURRENT ATTENDANCE
+===================================================== */
+
+async function getCurrentAttendance() {
+  const snapshot = await db.collection("registrations").get();
+
+  let total = 0;
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+
+    if (data.type === "cancelled" || data.type === "deleted") {
+      return;
+    }
+
+    if (Number.isFinite(Number(data.totalPeople))) {
+      total += Number(data.totalPeople);
+    } else {
+      total += 1 + Number(data.childrenCount || 0);
+    }
+  });
+
+  return total;
+}
+
+/* =====================================================
+   12. CHECK DUPLICATE EMAIL
+===================================================== */
+
+async function emailAlreadyRegistered(emailLower) {
+  const snapshot = await db.collection("registrations").get();
+
+  let duplicate = false;
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+
+    const savedEmail = (
+      data.emailLower || data.email || ""
+    ).trim().toLowerCase();
+
+    if (savedEmail === emailLower) {
+      duplicate = true;
+    }
+  });
+
+  return duplicate;
+}
+
+/* =====================================================
+   13. CONFIRM AND SAVE REGISTRATION
+===================================================== */
+
+confirmBtn.addEventListener("click", async function () {
+
+  if (isSubmitting || !registrationData) return;
+
+  isSubmitting = true;
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = "Submitting...";
+
+  hideError(reviewError);
+
+  try {
+    const data = registrationData;
+
+    // Check duplicate email
+    const duplicate = await emailAlreadyRegistered(data.emailLower);
+
+    if (duplicate) {
+      throw new Error(
+        "This email address is already registered. Please use another email address or contact the Consulate."
+      );
+    }
+
+    // Check available capacity
+    const currentCount = await getCurrentAttendance();
+
+    if (currentCount + data.totalPeople > MAX_TOTAL) {
+      const remaining = Math.max(0, MAX_TOTAL - currentCount);
+
+      throw new Error(
+        remaining === 0
+          ? "Sorry, registration is full. The maximum capacity of 20 people has been reached."
+          : `Sorry, only ${remaining} spot(s) remain. Your registration requires ${data.totalPeople} spot(s).`
+      );
+    }
+
+    // Save registration
+    await db.collection("registrations").add({
+      ...data,
+      type: "pending",
+      time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Show success screen
+    form.style.display = "none";
+    reviewPanel.style.display = "none";
+    successPanel.style.display = "block";
+
+    successPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+  } catch (error) {
+
+    console.error("Registration error:", error);
+
+    showError(
+      reviewError,
+      error.message || "Something went wrong. Please try again."
+    );
+
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = "Confirm & Submit";
+
+  } finally {
+    isSubmitting = false;
+  }
+
+});
+
+/* =====================================================
+   14. SUBMIT BUTTON STATE
+===================================================== */
+
+function updateReviewButton() {
+  const allowed = parentRegistered.value === "Yes";
+
+  reviewBtn.disabled = !allowed;
+}
+
+childrenCount.addEventListener("change", updateReviewButton);
+
+/* Initial state */
+updateReviewButton();
+
+</script>
+</body>
+</html>

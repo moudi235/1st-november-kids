@@ -565,6 +565,45 @@ select:disabled {
     flex-direction: column;
   }
 }
+.capacity-closed {
+  text-align: center;
+  padding: 45px 25px;
+  margin: 20px 0;
+  background: #f5f9f5;
+  border: 2px solid #07533d;
+  border-radius: 14px;
+  color: #26352d;
+}
+
+.capacity-icon {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #07533d;
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.capacity-closed h2 {
+  color: #07533d;
+  font-size: 25px;
+  margin-bottom: 15px;
+}
+
+.capacity-closed p {
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.capacity-thanks {
+  color: #07533d;
+  font-weight: bold;
+}
 </style>
 
 </head>
@@ -591,7 +630,18 @@ select:disabled {
   </header>
 
   <main class="content">
-
+    <div id="capacityClosed" class="capacity-closed" style="display:none;">
+  <div class="capacity-icon">!</div>
+  <h2>Registration is Currently Full</h2>
+  <p>
+    We have reached the maximum attendance capacity for this event.
+  </p>
+  <p>
+    Please check back later. Additional registration availability may open
+    if more spots become available.
+  </p>
+  <p class="capacity-thanks">Thank you for your understanding.</p>
+  </div>
     <div class="notice">
       We are pleased to invite you to celebrate this important occasion with us.
       Please complete the registration form below. Each registration is for one
@@ -791,8 +841,8 @@ const db = firebase.firestore();
    2. SETTINGS
 ===================================================== */
 
-const MAX_TOTAL = 00;
-const MAX_CHILDREN = 00;
+const MAX_TOTAL = 5;
+const MAX_CHILDREN = 5;
 const COLLECTION_NAME = "registrations";
 
 let registrationData = null;
@@ -1154,27 +1204,60 @@ editBtn.addEventListener("click", function () {
 ===================================================== */
 
 async function getCurrentAttendance() {
-  const snapshot = await db.collection("registrations").get();
+    const snapshot = await db.collection(COLLECTION_NAME).get();
 
-  let total = 0;
+    let total = 0;
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
+    snapshot.forEach((doc) => {
+        const data = doc.data();
 
-    if (data.type === "cancelled" || data.type === "deleted") {
-      return;
-    }
+        // تجاهل التسجيلات الملغاة أو المحذوفة
+        if (data.type === "cancelled" || data.type === "deleted") {
+            return;
+        }
 
-    if (Number.isFinite(Number(data.totalPeople))) {
-      total += Number(data.totalPeople);
-    } else {
-      total += 1 + Number(data.childrenCount || 0);
-    }
-  });
+        // حساب الأب + جميع أطفاله
+        const childrenCount = Number(data.childrenCount || 0);
 
-  return total;
+        total += 1 + childrenCount;
+    });
+
+    return total;
 }
 
+async function updateCapacityStatus() {
+  const closedPanel = document.getElementById("capacityClosed");
+  const currentForm = document.getElementById("registrationForm");
+  const currentReview = document.getElementById("reviewPanel");
+
+  try {
+    const currentCount = await getCurrentAttendance();
+    const remaining = Math.max(0, MAX_TOTAL - currentCount);
+
+    if (remaining <= 0) {
+      closedPanel.style.display = "block";
+      currentForm.style.display = "none";
+      currentReview.style.display = "none";
+      return false;
+    }
+
+    closedPanel.style.display = "none";
+    return true;
+
+  } catch (error) {
+    console.error("Capacity check failed:", error);
+
+    // لا نسمح بالتسجيل إذا تعذر التحقق من المقاعد
+    currentForm.style.display = "none";
+    closedPanel.style.display = "block";
+    closedPanel.innerHTML = `
+      <h2>Registration Temporarily Unavailable</h2>
+      <p>Please try again later.</p>
+    `;
+
+    return false;
+  }
+}
 /* =====================================================
    12. CHECK DUPLICATE EMAIL
 ===================================================== */
@@ -1227,16 +1310,20 @@ confirmBtn.addEventListener("click", async function () {
 
     // Check available capacity
     const currentCount = await getCurrentAttendance();
+const remaining = Math.max(0, MAX_TOTAL - currentCount);
 
-    if (currentCount + data.totalPeople > MAX_TOTAL) {
-      const remaining = Math.max(0, MAX_TOTAL - currentCount);
+if (remaining <= 0) {
+  await updateCapacityStatus();
+  throw new Error(
+    "Registration is currently full. Please check back later."
+  );
+}
 
-      throw new Error(
-        remaining === 0
-          ? "Sorry, registration is full. The maximum capacity of people has been reached."
-          : `Sorry, only ${remaining} spot(s) remain. Your registration requires ${data.totalPeople} spot(s).`
-      );
-    }
+if (data.totalPeople > remaining) {
+  throw new Error(
+    `Only ${remaining} spot(s) remain. Your registration requires ${data.totalPeople} spot(s).`
+  );
+}
 
     // Save registration
     await db.collection("registrations").add({
@@ -1276,7 +1363,7 @@ confirmBtn.addEventListener("click", async function () {
 /* =====================================================
    14. SUBMIT BUTTON STATE
 ===================================================== */
-
+updateCapacityStatus();
 function updateReviewButton() {
   const allowed = parentRegistered.value === "Yes";
 

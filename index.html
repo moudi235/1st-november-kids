@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,7 +102,7 @@ body {
 .container {
   position: relative;
   z-index: 2;
-  -width: 760px;
+  max-width: 760px;
   margin: 0 auto;
   background: #ffffff !important;
   border: 2px solid var(--green);
@@ -484,7 +485,7 @@ select:disabled {
 }
 
 /* Mobile layout */
-@media screen and (-width: 600px) {
+@media screen and (max-width: 600px) {
   body {
     padding: 12px 10px;
     background-attachment: scroll;
@@ -493,7 +494,7 @@ select:disabled {
 
   .container {
     width: 100%;
-    -width: 100%;
+    max-width: 100%;
     background: #ffffff !important;
     border-width: 2px;
     border-radius: 14px;
@@ -633,7 +634,7 @@ select:disabled {
   <div class="capacity-icon">!</div>
   <h2>Registration is Currently Full</h2>
   <p>
-    We have reached the imum attendance capacity for this event.
+    We have reached the maximum attendance capacity for this event.
   </p>
   <p>
     Please check back later. Additional registration availability may open
@@ -800,7 +801,7 @@ select:disabled {
       </p>
 
       <p>
-        You will receive a confirmation email once the verification process is complete.
+        You will receive a confirmation email shortly.
       </p>
 
       <p>
@@ -840,8 +841,8 @@ const db = firebase.firestore();
    2. SETTINGS
 ===================================================== */
 
-const MAX_TOTAL = 102;
-const MAX_CHILDREN = 102;
+const MAX_TOTAL = 101;
+const MAX_CHILDREN = 101;
 const COLLECTION_NAME = "registrations";
 
 let registrationData = null;
